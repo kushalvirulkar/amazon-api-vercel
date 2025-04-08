@@ -1,6 +1,6 @@
 const axios = require("axios");
 
-module.exports = async (req, res) => {
+export default async function handler(req, res) {
   const { asin } = req.query;
 
   if (!asin) {
@@ -37,4 +37,4 @@ module.exports = async (req, res) => {
     console.error(error);
     res.status(500).json({ error: "Something went wrong" });
   }
-};
+}
