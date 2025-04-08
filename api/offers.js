@@ -8,12 +8,11 @@ module.exports = async (req, res) => {
   }
 
   try {
-    const url = `https://real-time-amazon-data.p.rapidapi.com/product-offers`;
-    const response = await axios.get(url, {
+    const response = await axios.get("https://real-time-amazon-data.p.rapidapi.com/product-offers", {
       params: {
         asin: asin,
-        country: "IN",
-        limit: 100,
+        country: "IN", // ✅ India-specific
+        limit: 1,
         page: 1
       },
       headers: {
@@ -22,27 +21,32 @@ module.exports = async (req, res) => {
       }
     });
 
-    const data = response.data.data;
+    const data = response.data?.data || {};
 
     const price = data.product_price || "N/A";
     const mrp = data.product_original_price || "N/A";
 
     let discount = "N/A";
-    if (price !== "N/A" && mrp !== "N/A") {
-      try {
-        const priceInt = parseInt(price.replace(/[^\d]/g, ""));
-        const mrpInt = parseInt(mrp.replace(/[^\d]/g, ""));
-        const discountPercent = 100 - Math.round((priceInt * 100) / mrpInt);
-        discount = `${discountPercent}%`;
-      } catch (err) {
-        discount = "N/A";
+    try {
+      const priceInt = parseInt(price.replace(/[^\d]/g, ""));
+      const mrpInt = parseInt(mrp.replace(/[^\d]/g, ""));
+      if (priceInt && mrpInt && mrpInt > priceInt) {
+        discount = `${100 - Math.round((priceInt * 100) / mrpInt)}%`;
       }
+    } catch (err) {
+      // Ignore parsing errors
     }
 
-    return res.status(200).json({ price, mrp, discount });
+    res.status(200).json({
+      asin,
+      price,
+      mrp,
+      discount,
+      country: "IN"
+    });
 
   } catch (error) {
-    console.error("❌ Error fetching data:", error.message);
-    return res.status(500).json({ error: "Something went wrong Kus" });
+    console.error("❌ API Error:", error.message);
+    res.status(500).json({ error: "Something went wrong" });
   }
 };
