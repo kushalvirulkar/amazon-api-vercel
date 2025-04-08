@@ -11,18 +11,17 @@ module.exports = async (req, res) => {
     const response = await axios.get("https://real-time-amazon-data.p.rapidapi.com/product-offers", {
       params: {
         asin: asin,
-        country: "IN", // ✅ India-specific
+        country: "IN",
         limit: 1,
         page: 1
       },
       headers: {
-        "x-rapidapi-key": process.env.RAPIDAPI_KEY,
+        "x-rapidapi-key": "f9838736e1mshd14837be6cbe3b8p1c49aejsnd4bb0576a44e", // <-- direct likh diya yahan
         "x-rapidapi-host": "real-time-amazon-data.p.rapidapi.com"
       }
     });
 
     const data = response.data?.data || {};
-
     const price = data.product_price || "N/A";
     const mrp = data.product_original_price || "N/A";
 
@@ -47,6 +46,6 @@ module.exports = async (req, res) => {
 
   } catch (error) {
     console.error("❌ API Error:", error.message);
-    res.status(500).json({ error: "Something went wrong" });
+    res.status(500).json({ error: "Something went wrong xxx" });
   }
 };
