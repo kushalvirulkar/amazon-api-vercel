@@ -40,6 +40,6 @@ module.exports = async (req, res) => {
     res.status(200).json({ price, mrp, discount });
   } catch (error) {
     console.error("❌ API Call Error:", error.message);
-    res.status(500).json({ error: "Something went wrong" });
+    res.status(500).json({ error: "Something went wrong kushal" });
   }
 };
