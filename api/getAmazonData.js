@@ -34,7 +34,7 @@ module.exports = async (req, res) => {
 
     res.status(200).json({ price, mrp, discount });
   } catch (error) {
-    console.error(error.message);
+    console.error(error);
     res.status(500).json({ error: "Something went wrong" });
   }
 };
